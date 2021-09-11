@@ -1,0 +1,12 @@
+module simpla_adder(a,b,sum);
+
+  input a,b;
+  output reg[1:0] sum;
+  
+  
+  always@(a,b)
+    sum = a+b;
+    
+    
+endmodule
+ 
