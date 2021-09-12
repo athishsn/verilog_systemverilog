@@ -1,12 +1,52 @@
-module simpla_adder(a,b,sum);
-
-  input a,b;
-  output reg[1:0] sum;
-  
-  
-  always@(a,b)
-    sum = a+b;
-    
-    
-endmodule
+module adder(a,b,sum);
  
+  input a,b;
+  output reg [1:0]sum;
+ 
+ 
+ 
+  always @(a,b)
+     sum = a+b;
+ 
+ endmodule  
+
+
+//Test Bench
+
+
+ module TB(); 
+ 
+  wire [1:0]z;
+  reg x,y;
+ 
+   adder add(   .b(y), .sum(z), .a(x)    );  // instantiation with named mapping
+   
+ 
+  initial
+    begin
+      x = 0;
+      y = 0;
+      #10
+      x = 0;
+      y = 1;
+      #10
+      x = 1;
+      y = 0;
+      #10      
+      x = 1;
+      y = 1;
+     
+   end
+ 
+  initial
+    $monitor($time, "sum : z ,%b", z);
+ 
+  initial
+    begin
+      $dumpfile("dump.vcd");
+      $dumpvars;
+     
+    end
+  initial #150 $finish;
+ 
+endmodule
