@@ -1,0 +1,296 @@
+module fsm(y, x, rst);
+
+  input x, rst;
+  output reg y;
+  reg clk = 0;
+  reg [2:0]state;
+
+  parameter [2:0]s0 = 3'b000;
+  parameter [2:0]s1 = 3'b001;
+  parameter [2:0]s2 = 3'b010;
+  parameter [2:0]s3 = 3'b011;
+  parameter [2:0]s4 = 3'b100;
+
+  assign rst=1;  // active low reset
+ 
+  always #10 clk = ~clk;
+
+  always @(posedge clk)
+
+    begin
+
+       if(rst)
+
+          begin
+
+             case (state)
+
+               s0 :
+
+                      begin
+
+                        if(x)
+
+                          begin
+
+                          y = 0;
+
+                          state = s1;
+
+                          end
+
+                        else
+
+                          begin
+
+                          y = 0;
+
+                          state = s0;
+
+                          end
+
+                      end
+
+                s1 :
+
+                      begin
+
+                        if(!x)
+
+                          begin
+
+                          y = 0;
+
+                          state = s2;
+
+                          end
+
+                        else
+
+                          begin
+
+                          y = 0;
+
+                          state = s1;
+
+                          end
+
+                      end  
+
+               s2 :
+
+                      begin
+
+                        if(x)
+
+                          begin
+
+                          y = 0;
+
+                          state = s3;
+
+                          end
+
+                        else
+
+                          begin
+
+                          y = 0;
+
+                          state = s0;
+
+                          end                
+
+                 end
+
+               s3 :
+
+                      begin
+
+                        if(!x)
+
+                          begin
+
+                          y = 0;
+
+                          state = s4;
+
+                          end
+
+                        else
+
+                          begin
+
+                          y = 0;
+
+                          state = s1;
+
+                          end
+
+                      end
+
+               s4 :
+
+                      begin
+
+                        if(!x)
+
+                          begin
+
+                          y = 1;
+
+                          state = s0;
+
+                          end
+
+                        else
+
+                          begin
+
+                          y = 0;
+
+                          state = s1;
+
+                          end
+
+                      end
+
+                default:
+
+                        begin
+
+                          state = s0;
+
+              y=0;
+
+                        end
+
+            endcase
+
+          end
+ 
+       else
+
+          begin
+
+             state = s0;
+
+             y=0;
+
+          end
+
+    end
+
+ endmodule
+
+
+
+
+// testbench
+
+module tb();
+
+  reg y_tb;
+  reg x_tb, rst_tb;
+  reg clk_tb=0;
+
+
+  always #10 clk_tb = ~ clk_tb;
+
+  fsm myfsm(y_tb,x_tb,rst_tb); // instantiation
+
+ 
+  initial
+
+    begin
+      rst_tb = 1; //20
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 0;
+
+      #20 $display("[%0d] output y =  %b",$time, y_tb);
+
+      #20 rst_tb =1; // 21
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 1;
+
+      #20 $display("[%0d] output y =  %b",$time, y_tb);
+
+      rst_tb = 1; //20
+
+     
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 0;
+     
+      #20 $display("[%0d] output y =  %b",$time, y_tb);
+
+     
+
+      rst_tb = 0; //20
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 0;
+     
+      #20 $display("[%0d] output y =  %b",$time, y_tb);
+
+     
+      #20 rst_tb =1;
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 1;
+
+      #20 x_tb = 0;
+
+      #20 x_tb = 0;
+     
+      #20 $display("[%0d] output y =  %b",$time, y_tb);
+
+    end
+
+  initial $monitor("input x =  %b", x_tb);
+  initial $monitor("output y =  %b", y_tb);
+  initial $monitor("reset rst =  %b", rst_tb);
+
+ initial #1000 $finish;
+
+initial
+
+  begin
+    $dumpfile("dump.vcd");
+    $dumpvars;
+  end
+
+ endmodule
