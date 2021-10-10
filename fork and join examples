@@ -1,0 +1,65 @@
+module threads;  
+ 
+  initial
+    begin
+     
+      fork
+      #10 $display(" [%0t] fork join----- stmnt1 ", $time);
+      #20 $display(" [%0t] fork join----- stmnt2 ", $time);
+     join
+       disable fork;
+        $display("[%0t] fork join ----- outside ", $time);
+    end
+ 
+   initial  
+    begin
+     
+      fork
+      #35 $display("[%0t] fork join_any ------ stmnt1 ", $time);
+      #25 $display(" [%0t] fork join_any ----- stmnt2 ", $time);
+     join_any
+       // wait fork;
+       disable fork;
+      $display("[%0t] fork join_any ----- outside ", $time);
+     
+    end
+ 
+   initial
+    begin
+     
+      fork
+      #5 $display("[%0t] fork join_none ------ stmnt1 ", $time);
+      #15 $display("[%0t] fork join_none ----- stmnt2 ", $time);
+      join_none
+       wait fork;
+      #1 $display("[%0t] fork join_none ----- outside ", $time);
+       disable fork;
+    end
+ 
+endmodule
+
+module Event;
+   
+  event event_a;
+
+  initial
+   begin
+    #20 -> event_a;
+    $display ("[%0t] Thread1: triggered event_a ", $time);
+   end
+ 
+  initial
+   begin
+    $display ("[%0t] Thread2: waiting for trigger ", $time);
+    @(event_a);
+    $display ("[%0t] Thread2: received event_a trigger ", $time);
+   end
+ 
+  initial
+   begin
+    $display ("[%0t] Thread3: waiting for trigger ", $time);
+    wait(event_a.triggered);
+    $display ("[%0d] Thread3: received event_a trigger ", $time);
+   end
+
+endmodule
